@@ -101,7 +101,7 @@ export default function IngredientTab({ form }: { form: UseFormReturn<Cocktail, 
       {(isIngredientsLoading || !ingredients) ? (
         <span>Loading</span>
       ) : (
-        <div className="grow-0 flex flex-col gap-4">
+        <div className="h-full flex flex-col gap-4">
           <div className="grow">
             <ScrollArea className="flex items-center justify-center w-full">
               <div className="w-full">
