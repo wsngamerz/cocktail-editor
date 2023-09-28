@@ -27,7 +27,6 @@
         "./src/*"
       ]
     },
-    "importsNotUsedAsValues": "error"
   },
   "include": [
     "next-env.d.ts",
