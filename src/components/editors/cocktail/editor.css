@@ -1,0 +1,8 @@
+.editor-card {
+    @apply bg-white rounded p-4;
+    @apply shadow-sm border border-gray-200;
+}
+
+.editor-internal-card {
+    @apply bg-gray-50 shadow-sm border border-gray-200 rounded p-4
+}

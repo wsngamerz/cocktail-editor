@@ -1,0 +1,7 @@
+import { type NextRequest, NextResponse } from "next/server";
+
+export const GET = (req: NextRequest, res: NextResponse): NextResponse => {
+  const data = {"status":"success","data":[{"id":2,"name":"White rum","description":" ","categoryId":86,"abv":"40.00"},{"id":3,"name":"Lime Juice","description":" ","categoryId":56,"abv":"0.00"},{"id":4,"name":"Simple Syrup","description":" ","categoryId":65,"abv":"0.00"},{"id":5,"name":"Coconut Cream","description":" ","categoryId":51,"abv":"0.00"},{"id":6,"name":"Pineapple juice","description":" ","categoryId":58,"abv":"0.00"},{"id":8,"name":"Ginger beer","description":" ","categoryId":43,"abv":"0.00"},{"id":7,"name":"Dark Rum","description":" ","categoryId":83,"abv":"40.00"},{"id":9,"name":"Vodka","description":" ","categoryId":5,"abv":"40.00"},{"id":10,"name":"Coffee Liqueur","description":" ","categoryId":71,"abv":"20.00"},{"id":11,"name":"Coffee","description":" ","categoryId":37,"abv":"0.00"},{"id":12,"name":"Citrus vodka\t","description":" ","categoryId":82,"abv":"40.00"},{"id":13,"name":"Cointreau","description":" ","categoryId":80,"abv":"40.00"},{"id":14,"name":"Cranberry Juice\t","description":" ","categoryId":52,"abv":"0.00"},{"id":15,"name":"Cola","description":" ","categoryId":42,"abv":"0.00"},{"id":16,"name":"Irish cream liqueur\t","description":" ","categoryId":72,"abv":"17.00"},{"id":17,"name":"Amaretto","description":" ","categoryId":81,"abv":"21.00"}]}
+
+  return NextResponse.json(data);
+};
