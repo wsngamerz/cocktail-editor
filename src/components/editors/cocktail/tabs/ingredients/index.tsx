@@ -1,23 +1,21 @@
-import type { UseFormReturn } from "react-hook-form";
-import { useForm } from "react-hook-form";
-import type { Cocktail, CocktailIngredient } from "@/types/cocktail";
+import React from "react";
+import { useForm, UseFormReturn } from "react-hook-form";
+import { RefreshCcwIcon } from "lucide-react";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 
+import type { Cocktail, CocktailIngredient } from "@/types/cocktail";
 import { Unit, unitToString } from "@/types/unit";
 import useIngredients from "@/hooks/useIngredients";
-
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import EditorTab from "@/components/editors/cocktail/tabs/EditorTab";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Check, ChevronDownIcon, ChevronsUpDownIcon, ChevronUpIcon, RefreshCcwIcon, XIcon } from "lucide-react";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import React from "react";
+import IngredientItem from "@/components/editors/cocktail/tabs/ingredients/IngredientItem";
+import IngredientSelector from "@/components/editors/cocktail/tabs/ingredients/IngredientSelector";
 
-export default function IngredientTab({ form }: { form: UseFormReturn<Cocktail, any, undefined> }) {
+export default function Index({ form }: { form: UseFormReturn<Cocktail, any, undefined> }) {
   const { ingredients, isError, isLoading: isIngredientsLoading } = useIngredients();
   const watchIngredients = form.watch("ingredients");
 
@@ -83,6 +81,20 @@ export default function IngredientTab({ form }: { form: UseFormReturn<Cocktail, 
     form.setValue("ingredients", ingredients.filter((ingredient) => ingredient.ingredientId !== ingredientId));
   };
 
+  const onIngredientDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || !active) return;
+
+    if (active.id !== over.id) {
+      const ingredients = form.getValues("ingredients");
+      const activeIndex = ingredients.findIndex((ingredient) => ingredient.ingredientId === active.id);
+      const overIndex = ingredients.findIndex((ingredient) => ingredient.ingredientId === over.id);
+
+      form.setValue("ingredients", arrayMove(ingredients, activeIndex, overIndex));
+    }
+  };
+
   const addShot = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
 
@@ -102,42 +114,26 @@ export default function IngredientTab({ form }: { form: UseFormReturn<Cocktail, 
         <span>Loading</span>
       ) : (
         <div className="h-full flex flex-col gap-4">
-          <div className="grow">
-            <ScrollArea className="flex items-center justify-center w-full">
-              <div className="w-full">
+
+          <DndContext onDragEnd={onIngredientDragEnd}>
+            <SortableContext items={watchIngredients.map(i => i.ingredientId)}>
+              <div className="grow w-full">
                 {watchIngredients.map((ci) => {
                   const ingredient = ingredients.find((ingredient) => ingredient.id === ci.ingredientId);
                   if (!ingredient) return null;
 
-                  return (
-                    <div key={ci.ingredientId}
-                         className="flex items-center gap-2 p-2 mb-1 border rounded-md">
-                      <div className="flex flex-col">
-                        <ChevronUpIcon className="w-4 h-4" />
-                        <ChevronDownIcon className="w-4 h-4" />
-                      </div>
-
-                      <div className="grow">
-                        <h3 className="font-bold leading-none">{ingredient.name}</h3>
-                        <span className="text-sm leading-none">
-                          {ci.amount > 0 && ci.amount} {ci.unit !== Unit.NONE && unitToString(ci.unit)}
-                        </span>
-                      </div>
-
-                      <XIcon className="w-4 h-4"
-                             onClick={() => onIngredientRemove(ci.ingredientId)} />
-                    </div>
-                  );
+                  return (<IngredientItem key={ci.ingredientId} ingredient={ingredient} ci={ci}
+                                          onIngredientRemove={onIngredientRemove} />);
                 })}
 
                 {watchIngredients.length === 0 && (
                   <span className="block w-full text-center text-gray-600 text-xs rounded-md border p-4">
-                  Add ingredients to your cocktail below.
-               </span>
+                    Add ingredients to your cocktail below.
+                 </span>
                 )}
               </div>
-            </ScrollArea>
-          </div>
+            </SortableContext>
+          </DndContext>
 
           <div className="editor-internal-card grid gap-4">
             <h2 className="font-bold">Add Ingredient</h2>
@@ -145,66 +141,9 @@ export default function IngredientTab({ form }: { form: UseFormReturn<Cocktail, 
             <Form {...ingredientForm}>
               <div className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
-                  <FormField
-                    control={ingredientForm.control}
-                    name="ingredientId"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Ingredient</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                role="combobox"
-                                className={cn(
-                                  "w-full justify-between",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value
-                                  ? ingredients.find(
-                                    (ingredient) => ingredient.id === field.value
-                                  )?.name
-                                  : "Select ingredient"}
-                                <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-[300px] p-0">
-                            <Command>
-                              <CommandInput placeholder="Search ingredients..." />
-                              <CommandEmpty>No ingredient found.</CommandEmpty>
-                              <CommandGroup>
-                                {ingredients
-                                  .filter((i) => !watchIngredients.find((ingredient) => ingredient.ingredientId === i.id))
-                                  .map((ingredient) => (
-                                    <CommandItem
-                                      value={ingredient.name}
-                                      key={ingredient.id}
-                                      onSelect={() => {
-                                        ingredientForm.setValue("ingredientId", ingredient.id);
-                                      }}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          ingredient.id === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                      {ingredient.name}
-                                    </CommandItem>
-                                  ))}
-                              </CommandGroup>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {/*Cocktail Ingredient*/}
+                  <IngredientSelector ingredients={ingredients} ingredientForm={ingredientForm}
+                                      watchIngredients={watchIngredients} />
 
                   <div className="grid grid-cols-2 gap-4">
                     {/*Cocktail Ingredient Amount*/}

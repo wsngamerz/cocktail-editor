@@ -17,7 +17,7 @@ import { Form } from "@/components/ui/form";
 import { slugify } from "@/lib/utils";
 import LiquidTab from "@/components/editors/cocktail/tabs/LiquidTab";
 import GarnishTab from "@/components/editors/cocktail/tabs/GarnishTab";
-import IngredientTab from "@/components/editors/cocktail/tabs/IngredientTab";
+import IngredientsTab from "@/components/editors/cocktail/tabs/ingredients";
 import InstructionsTab from "@/components/editors/cocktail/tabs/InstructionTab";
 
 const emptyCocktail: Cocktail = {
@@ -83,7 +83,7 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
                 <Tabs.Content className="w-full h-full" value={EditorTab.DETAILS}><DetailsTab form={form} /></Tabs.Content>
                 <Tabs.Content className="w-full h-full" value={EditorTab.LIQUID}><LiquidTab form={form} /></Tabs.Content>
                 <Tabs.Content className="w-full h-full" value={EditorTab.GARNISHES}><GarnishTab form={form} /></Tabs.Content>
-                <Tabs.Content className="w-full h-full" value={EditorTab.INGREDIENTS}><IngredientTab form={form} /></Tabs.Content>
+                <Tabs.Content className="w-full h-full" value={EditorTab.INGREDIENTS}><IngredientsTab form={form} /></Tabs.Content>
                 <Tabs.Content className="w-full h-full" value={EditorTab.INSTRUCTIONS}><InstructionsTab form={form} /></Tabs.Content>
               </form>
             </Form>

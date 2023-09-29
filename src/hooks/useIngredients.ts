@@ -1,14 +1,9 @@
+import { Ingredient } from "@/types/ingredient";
 import useSWR from "swr";
 import fetcher from "@/lib/utils";
 
 type IngredientResponse = {
-  data: {
-    id: number;
-    name: string;
-    description: string;
-    categoryId: number;
-    abv: number;
-  }[];
+  data: Ingredient[];
   status: string;
 }
 
