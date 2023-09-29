@@ -18,7 +18,7 @@ import { slugify } from "@/lib/utils";
 import LiquidTab from "@/components/editors/cocktail/tabs/LiquidTab";
 import GarnishTab from "@/components/editors/cocktail/tabs/GarnishTab";
 import IngredientsTab from "@/components/editors/cocktail/tabs/ingredients";
-import InstructionsTab from "@/components/editors/cocktail/tabs/InstructionTab";
+import InstructionsTab from "@/components/editors/cocktail/tabs/instructions";
 
 const emptyCocktail: Cocktail = {
   id: 0,
