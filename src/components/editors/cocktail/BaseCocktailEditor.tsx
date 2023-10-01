@@ -70,7 +70,7 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
           <h1 className="text-center text-xl font-bold">{title}</h1>
 
           <Tabs.Root className="grow flex flex-col gap-4" defaultValue={EditorTab.DETAILS}>
-            <Tabs.List className="editor-internal-card bg-gray-200 rounded-md grid grid-cols-5 gap-1 !p-1">
+            <Tabs.List className="editor-internal-card rounded-md grid grid-cols-5 gap-1 !p-1">
               <EditorTabTrigger value={EditorTab.DETAILS} name="Details" icon={<ListIcon />} />
               <EditorTabTrigger value={EditorTab.LIQUID} name="Liquid" icon={<DropletIcon />} />
               <EditorTabTrigger value={EditorTab.GARNISHES} name="Garnish" icon={<CitrusIcon />} />
@@ -111,8 +111,7 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
 function EditorTabTrigger({ value, name, icon }: { value: EditorTab, name: string, icon: ReactNode }) {
   return (
     <Tabs.Trigger
-      className="aspect-square p-1 bg-gray-50 rounded text-gray-600 data-[state=active]:text-gray-900 data-[state=active]:bg-gray-200 transition-colors duration-200"
-      value={value}>
+      className="aspect-square p-1 bg-gray-50 rounded text-gray-600 data-[state=active]:text-gray-900 data-[state=active]:bg-gray-200 transition-colors duration-200 dark:bg-gray-900 dark:text-gray-500 dark:data-[state=active]:text-gray-100 dark:data-[state=active]:bg-gray-800"      value={value}>
       <div className="text-center flex flex-col items-center gap-1">
         {icon}
         <span className="text-xs">

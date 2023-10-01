@@ -35,7 +35,7 @@ export default function IngredientItem({ ci, ingredient, onIngredientRemove }: I
   };
 
   return (
-    <div className={cn("relative bg-white", active ? "z-10" : "z-0")} style={style}>
+    <div className={cn("relative bg-white dark:bg-gray-900 rounded-md", active ? "z-10" : "z-0")} style={style}>
       <div ref={setNodeRef} {...attributes} {...listeners}
            className="mb-1 flex items-center gap-2 rounded-md border p-2">
         <div className="flex flex-col">

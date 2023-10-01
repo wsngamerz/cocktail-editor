@@ -14,6 +14,7 @@ import EditorTab from "@/components/editors/cocktail/tabs/EditorTab";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import IngredientItem from "@/components/editors/cocktail/tabs/ingredients/IngredientItem";
 import IngredientSelector from "@/components/editors/cocktail/tabs/ingredients/IngredientSelector";
+import EmptyList from "@/components/editors/cocktail/tabs/EmptyList";
 
 export default function Index({ form }: { form: UseFormReturn<Cocktail, any, undefined> }) {
   const { ingredients, isError, isLoading: isIngredientsLoading } = useIngredients();
@@ -127,9 +128,9 @@ export default function Index({ form }: { form: UseFormReturn<Cocktail, any, und
                 })}
 
                 {watchIngredients.length === 0 && (
-                  <span className="block w-full text-center text-gray-600 text-xs rounded-md border p-4">
+                  <EmptyList>
                     Add ingredients to your cocktail below.
-                 </span>
+                  </EmptyList>
                 )}
               </div>
             </SortableContext>

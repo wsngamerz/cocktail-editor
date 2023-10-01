@@ -11,6 +11,7 @@ import { RefreshCcwIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import InstructionItem from "@/components/editors/cocktail/tabs/instructions/InstructionItem";
+import EmptyList from "@/components/editors/cocktail/tabs/EmptyList";
 
 export default function InstructionsTab({ form }: { form: UseFormReturn<Cocktail, any, undefined> }) {
   const watchInstructions = form.watch("instructions");
@@ -107,9 +108,9 @@ export default function InstructionsTab({ form }: { form: UseFormReturn<Cocktail
               ))}
 
               {watchInstructions.length === 0 && (
-                <span className="block w-full text-center text-gray-600 text-xs rounded-md border p-4">
+                <EmptyList>
                     Add instructions to your cocktail below.
-                 </span>
+                </EmptyList>
               )}
             </div>
           </SortableContext>
@@ -128,7 +129,6 @@ export default function InstructionsTab({ form }: { form: UseFormReturn<Cocktail
                     <FormItem>
                       <FormLabel>Instruction</FormLabel>
                       <FormControl>
-                        {/* Casting to integer within onChange event*/}
                         <Textarea {...field} />
                       </FormControl>
                       <FormMessage />

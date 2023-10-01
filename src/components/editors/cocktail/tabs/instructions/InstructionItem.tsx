@@ -30,7 +30,7 @@ export default function InstructionItem({ instruction, onInstructionRemove }: In
   };
 
   return (
-    <div className="relative bg-white" style={style}>
+    <div className="relative bg-white dark:bg-gray-900 rounded-md" style={style}>
       <div ref={setNodeRef} {...attributes} {...listeners}
            className="mb-1 flex items-center gap-2 rounded-md border p-2">
         <div className="flex flex-col">
@@ -40,7 +40,7 @@ export default function InstructionItem({ instruction, onInstructionRemove }: In
 
         <div className="text-sm grow flex gap-1">
           <span>{instruction.order + 1}.</span>
-          <p className="text-gray-700">
+          <p className="text-gray-700 dark:text-gray-300">
             {instruction.content}
           </p>
         </div>
