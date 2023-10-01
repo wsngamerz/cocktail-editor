@@ -24,6 +24,7 @@ export type Cocktail = {
 }
 
 export type CocktailGarnish = {
+  id: number;
   cocktailId: number;
   garnish: Garnish;
   x: number;

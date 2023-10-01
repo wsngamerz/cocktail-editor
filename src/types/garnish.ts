@@ -3,3 +3,14 @@ export enum Garnish {
   LEMON_WEDGE,
   ORANGE_WEDGE,
 }
+
+export const garnishToString = (garnish: Garnish): string => {
+  switch (garnish) {
+    case Garnish.LIME_WEDGE:
+      return "Lime Wedge";
+    case Garnish.LEMON_WEDGE:
+      return "Lemon Wedge";
+    case Garnish.ORANGE_WEDGE:
+      return "Orange Wedge";
+  }
+}

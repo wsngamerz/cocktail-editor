@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { slugify } from "@/lib/utils";
 import LiquidTab from "@/components/editors/cocktail/tabs/LiquidTab";
-import GarnishTab from "@/components/editors/cocktail/tabs/GarnishTab";
+import GarnishTab from "@/components/editors/cocktail/tabs/garnishes";
 import IngredientsTab from "@/components/editors/cocktail/tabs/ingredients";
 import InstructionsTab from "@/components/editors/cocktail/tabs/instructions";
 
