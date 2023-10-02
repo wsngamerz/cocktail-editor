@@ -27,20 +27,20 @@ type PickerState = {
   value: string;
   colors: any[];
   degrees: number;
-  inFocus: string;
+  inFocus: string | null;
   opacity: number;
   onChange: (value: string) => void;
-  addPoint: (e: any) => void;
+  addPoint: (e: React.MouseEvent) => void;
   inputType: string;
   nextPoint: () => void;
   tinyColor: any;
-  handleHue : (e: any) => void;
-  setInFocus: (value: string) => void;
+  handleHue: (e: React.MouseEvent) => void;
+  setInFocus: (value: string | null) => void;
   isGradient: boolean;
   offsetLeft: number;
   squareSize: number;
   hideOpacity: boolean;
-  handleColor: (e: any, ctx: any) => void;
+  handleColor: (e: React.MouseEvent, ctx: any) => void;
   currentLeft: number;
   deletePoint: () => void;
   internalHue: number;
@@ -50,7 +50,7 @@ type PickerState = {
   handleChange: (value: string) => void;
   currentColor: string;
   selectedColor: number;
-  handleOpacity: (e: any) => void;
+  handleOpacity: (e: React.MouseEvent) => void;
   setInternalHue: (value: number) => void;
   previousColors: string[];
   handleGradient: (newColor: string, left: number) => void;
@@ -60,6 +60,8 @@ type PickerState = {
 }
 
 const { crossSize } = config;
+
+// @ts-ignore
 const PickerContext = createContext<PickerState>({});
 
 type PickerContextWrapperProps = {
@@ -87,7 +89,7 @@ export default function PickerContextWrapper({
   const degrees = getDegrees(value);
   const degreeStr =
     gradientType === "linear-gradient" ? `${degrees}deg` : "circle";
-  const colors = getColors(value);
+  const colors = getColors(value) as any[];
   const indexedColors = colors?.map((c, i) => ({ ...c, index: i }));
   const currentColorObj =
     indexedColors?.filter((c) => isUpperCase(c.value))[0] || indexedColors[0];
@@ -103,12 +105,12 @@ export default function PickerContextWrapper({
   const [internalHue, setInternalHue] = useState(Math.round(h));
   const hue = Math.round(h);
   const [x, y] = computeSquareXY([hue, s, l], squareSize, squareHeight);
-  const [previousColors, setPreviousColors] = useState([]);
-  const [previousGradients, setPreviousGradients] = useState([]);
-  const [inFocus, setInFocus] = useState("");
+  const [previousColors, setPreviousColors] = useState<string[]>([]);
+  const [previousGradients, setPreviousGradients] = useState<string[]>([]);
+  const [inFocus, setInFocus] = useState<string | null>("");
   // const [undoLog, setUndoLog] = useState(0)
 
-  const internalOnChange = (newValue) => {
+  const internalOnChange = (newValue: string) => {
     if (newValue !== value) {
       if (isGradient) {
         if (!compareGradients(previousGradients[0], value)) {
@@ -127,14 +129,14 @@ export default function PickerContextWrapper({
     setInternalHue(hue);
   }, [currentColor, hue]);
 
-  const createGradientStr = (newColors) => {
+  const createGradientStr = (newColors: any[]) => {
     let sorted = newColors.sort((a, b) => a.left - b.left);
     let colorString = sorted?.map((cc) => `${cc?.value} ${cc.left}%`);
     internalOnChange(`${gradientType}(${degreeStr}, ${colorString.join(", ")})`);
   };
 
-  const handleGradient = (newColor, left = currentLeft) => {
-    let remaining = colors?.filter((c) => !isUpperCase(c.value));
+  const handleGradient = (newColor: string, left = currentLeft) => {
+    let remaining = colors?.filter((c: any) => !isUpperCase(c.value));
     let newColors = [
       { value: newColor.toUpperCase(), left: left },
       ...remaining
@@ -142,7 +144,7 @@ export default function PickerContextWrapper({
     createGradientStr(newColors);
   };
 
-  const handleChange = (newColor) => {
+  const handleChange = (newColor: string) => {
     if (isGradient) {
       handleGradient(newColor);
     } else {
@@ -150,19 +152,19 @@ export default function PickerContextWrapper({
     }
   };
 
-  const handleOpacity = (e) => {
+  const handleOpacity = (e: React.MouseEvent) => {
     let newO = getHandleValue(e) / 100;
     let newColor = `rgba(${r}, ${g}, ${b}, ${newO})`;
     handleChange(newColor);
   };
 
-  const handleHue = (e) => {
+  const handleHue = (e: React.MouseEvent) => {
     let newHue = getHandleValue(e) * 3.6;
     let newHsl = getNewHsl(newHue, s, l, opacity, setInternalHue);
     handleChange(newHsl);
   };
 
-  const handleColor = (e, ctx) => {
+  const handleColor = (e: React.MouseEvent, ctx: CanvasRenderingContext2D) => {
     const [x, y] = computePickerPosition(e);
     const x1 = Math.min(x + crossSize / 2, squareSize - 1);
     const y1 = Math.min(y + crossSize / 2, squareHeight - 1);
@@ -171,15 +173,15 @@ export default function PickerContextWrapper({
     handleChange(newColor);
   };
 
-  const setSelectedColor = (index) => {
-    let newGradStr = colors?.map((cc, i) => ({
+  const setSelectedColor = (index: number) => {
+    let newGradStr = colors?.map((cc: any, i: number) => ({
       ...cc,
       value: i === index ? high(cc) : low(cc)
     }));
     createGradientStr(newGradStr);
   };
 
-  const addPoint = (e) => {
+  const addPoint = (e: React.MouseEvent) => {
     let left = getHandleValue(e);
     let newColors = [
       ...colors.map((c) => ({ ...c, value: low(c) })),
@@ -194,7 +196,7 @@ export default function PickerContextWrapper({
         ...fc,
         value: i === selectedColor - 1 ? high(fc) : low(fc)
       }));
-      let remaining = formatted?.filter((rc, i) => i !== selectedColor);
+      let remaining = formatted?.filter((_rc, i) => i !== selectedColor);
       createGradientStr(remaining);
     }
   };
@@ -213,8 +215,9 @@ export default function PickerContextWrapper({
     };
   }, [inFocus, value]);
 
-  const handleClickFocus = (e) => {
-    let formattedPath = e?.path?.map((el) => el.id);
+  const handleClickFocus = (e: MouseEvent) => {
+    // @ts-ignore
+    let formattedPath = e?.path?.map((el: any) => el.id);
 
     if (formattedPath?.includes("gradient-bar")) {
       setInFocus("gpoint");
@@ -227,7 +230,7 @@ export default function PickerContextWrapper({
     }
   };
 
-  const pickerState = {
+  const pickerState: PickerState = {
     x,
     y,
     s,

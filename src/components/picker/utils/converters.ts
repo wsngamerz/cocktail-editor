@@ -5,7 +5,7 @@ const blackCMYK: CMYK = {
   m: 0,
   y: 0,
   k: 1
-}
+};
 
 export function rgb2cmyk(r: number, g: number, b: number): CMYK {
   let computedC = 0;

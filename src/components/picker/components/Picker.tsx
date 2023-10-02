@@ -15,15 +15,10 @@ type PickerProps = {
   hideOpacity?: boolean;
   hideHue?: boolean;
   presets?: string[];
-  hideEyeDrop?: boolean;
   hideAdvancedSliders?: boolean;
   hideColorGuide?: boolean;
   hideInputType?: boolean;
   hideColorTypeBtns?: boolean;
-  hideGradientType?: boolean;
-  hideGradientAngle?: boolean;
-  hideGradientStop?: boolean;
-  hideGradientControls?: boolean;
 }
 
 const Picker = ({
@@ -33,35 +28,25 @@ const Picker = ({
                   hideOpacity,
                   hideHue,
                   presets,
-                  hideEyeDrop,
                   hideAdvancedSliders,
                   hideColorGuide,
                   hideInputType,
-                  hideColorTypeBtns,
-                  hideGradientType,
-                  hideGradientAngle,
-                  hideGradientStop,
-                  hideGradientControls
+                  hideColorTypeBtns
                 }: PickerProps) => {
   const { isGradient } = usePicker();
 
   return (
-    <div style={{ userSelect: "none" }} id="rbgcp-wrapper">
+    <div className="select-none grid grid-cols-1 gap-2" id="rbgcp-wrapper">
       <div className="flex gap-2">
         <Square />
         {!hidePresets && <Presets presets={presets} />}
       </div>
       {!hideControls && (
         <Controls
-          hideEyeDrop={hideEyeDrop}
           hideAdvancedSliders={hideAdvancedSliders}
           hideColorGuide={hideColorGuide}
           hideInputType={hideInputType}
           hideColorTypeBtns={hideColorTypeBtns}
-          hideGradientControls={hideGradientControls}
-          hideGradientType={hideGradientType}
-          hideGradientAngle={hideGradientAngle}
-          hideGradientStop={hideGradientStop}
         />
       )}
       {isGradient && <GradientBar />}

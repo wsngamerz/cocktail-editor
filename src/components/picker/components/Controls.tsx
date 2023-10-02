@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { InputsIcon, PaletteIcon, SlidersIcon } from "./icon";
 import { usePicker } from "../context";
-import EyeDropper from "./EyeDropper";
 import { config } from "../constants";
 import AdvancedControls from "./AdvancedControls";
 import ComparibleColors from "./ComparibleColors";
@@ -12,40 +11,29 @@ import { cn } from "@/lib/utils";
 var { defaultColor, defaultGradient } = config;
 
 type ControlsProps = {
-  hideEyeDrop?: boolean
   hideAdvancedSliders?: boolean
   hideColorGuide?: boolean
   hideInputType?: boolean
   hideColorTypeBtns?: boolean
-  hideGradientControls?: boolean
-  hideGradientType?: boolean
-  hideGradientAngle?: boolean
-  hideGradientStop?: boolean
 }
 
 const Controls = ({
-                    hideEyeDrop,
                     hideAdvancedSliders,
                     hideColorGuide,
                     hideInputType,
-                    hideColorTypeBtns,
-                    hideGradientControls,
-                    hideGradientType,
-                    hideGradientAngle,
-                    hideGradientStop
+                    hideColorTypeBtns
                   }: ControlsProps) => {
   const {
     isGradient,
     internalOnChange,
     previousColors,
-    previousGradients,
-    handleChange
+    previousGradients
   } = usePicker();
   const [openAdvanced, setOpenAdvanced] = useState(false);
   const [openComparibles, setOpenComparibles] = useState(false);
   const [openInputType, setOpenInputType] = useState(false);
   const noTools =
-    hideEyeDrop && hideAdvancedSliders && hideColorGuide && hideInputType;
+    hideAdvancedSliders && hideColorGuide && hideInputType;
 
   const solidColor = previousColors?.[0] || defaultColor;
   const gradientColor = previousGradients?.[0] || defaultGradient;
@@ -58,10 +46,10 @@ const Controls = ({
     internalOnChange(gradientColor);
   };
 
-  const allRightControlsHidden = hideEyeDrop && hideAdvancedSliders && hideColorGuide && hideInputType;
+  const allRightControlsHidden = hideAdvancedSliders && hideColorGuide && hideInputType;
 
   return (
-    <div className="pt-4">
+    <div className="pt-4 grid grid-cols-1 gap-1">
       <div className="w-full flex justify-between items-center">
         <div
           className={cn("rounded p-1 flex justify-center items-center", internalCardStyles())}
@@ -88,21 +76,6 @@ const Controls = ({
           <div
             className={cn("flex justify-end items-center p-1 rounded", noTools ? "hidden" : "", internalCardStyles())}
           >
-            {!hideEyeDrop && (
-              <div className="cursor-pointer dark:invert">
-                <EyeDropper
-                  onSelect={handleChange}
-                  buttonStyle={{
-                    width: 30,
-                    height: 24,
-                    borderRadius: 4,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                />
-              </div>
-            )}
             <div
               className={cn("rounded justify-center items-center", controlButtonStyles(openAdvanced), hideAdvancedSliders ? "hidden" : "flex")}
               style={{
@@ -148,12 +121,8 @@ const Controls = ({
       {!hideColorGuide && (
         <ComparibleColors openComparibles={openComparibles} />
       )}
-      {(isGradient && !hideGradientControls) && (
-        <GradientControls
-          hideGradientType={hideGradientType}
-          hideGradientAngle={hideGradientAngle}
-          hideGradientStop={hideGradientStop}
-        />
+      {(isGradient) && (
+        <GradientControls />
       )}
     </div>
   );

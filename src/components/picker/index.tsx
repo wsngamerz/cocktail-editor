@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import PickerContextWrapper from "./context";
 import Picker from "./components/Picker";
-import "./styles.css"
+import "./styles.css";
 
 const WIDTH = 300;
 const HEIGHT = 300;
@@ -37,15 +37,10 @@ function ColorPicker({ value, onChange }: ColourPickerProps) {
           hideOpacity={false}
           hideHue={false}
           presets={[]}
-          hideEyeDrop={false}
           hideAdvancedSliders={false}
           hideColorGuide={false}
           hideInputType={false}
           hideColorTypeBtns={false}
-          hideGradientType={false}
-          hideGradientAngle={false}
-          hideGradientStop={false}
-          hideGradientControls={false}
         />
       </PickerContextWrapper>
     </div>

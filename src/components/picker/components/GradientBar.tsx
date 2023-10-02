@@ -1,15 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { getHandleValue } from '../utils/utils'
-import { usePicker } from '../context'
-import {
-  psRl,
-  df,
-  jc,
-  ac,
-  gradientHandleWrap,
-  gradientHandle,
-  borderBox
-} from '../style'
+import React, { useEffect, useState } from "react";
+import { getHandleValue } from "../utils/utils";
+import { usePicker } from "../context";
 
 const GradientBar = () => {
   const {
@@ -18,116 +9,117 @@ const GradientBar = () => {
     colors,
     value,
     handleGradient,
-    squareSize,
-    deletePoint,
-    isGradient,
     selectedColor,
-    inFocus,
-    setInFocus,
-  } = usePicker()
-  const [dragging, setDragging] = useState(false)
+    setInFocus
+  } = usePicker();
+  const [dragging, setDragging] = useState(false);
+  const [barWidth, setBarWidth] = useState(0);
 
-  function force90degLinear(color) {
+  const barRef = React.useRef<HTMLDivElement>(null);
+
+  function force90degLinear(color: string) {
     return color.replace(
       /(radial|linear)-gradient\([^,]+,/,
-      'linear-gradient(90deg,'
-    )
+      "linear-gradient(90deg,"
+    );
   }
+
+  useEffect(() => {
+    if (barRef.current) {
+      setBarWidth(barRef.current.clientWidth);
+    }
+  }, [barRef]);
 
   useEffect(() => {
     let selectedEl = window?.document?.getElementById(
       `gradient-handle-${selectedColor}`
-    )
-    selectedEl.focus()
-  }, [selectedColor])
+    );
+    selectedEl?.focus();
+  }, [selectedColor]);
 
   const stopDragging = () => {
-    setDragging(false)
-  }
+    setDragging(false);
+  };
 
-  const handleDown = (e) => {
+  const handleDown = (e: React.MouseEvent) => {
     if (!dragging) {
-      addPoint(e)
-      setDragging(true)
+      addPoint(e);
+      setDragging(true);
     }
-  }
+  };
 
-  const handleMove = (e) => {
+  const handleMove = (e: React.MouseEvent) => {
     if (dragging) {
-      handleGradient(currentColor, getHandleValue(e))
+      handleGradient(currentColor, getHandleValue(e));
     }
-  }
-
-  const handleKeyboard = (e) => {
-    if (isGradient) {
-      if (e.keyCode === 8) {
-        if (inFocus === 'gpoint') {
-          deletePoint()
-        }
-      }
-    }
-  }
+  };
 
   const handleUp = () => {
-    stopDragging()
-  }
+    stopDragging();
+  };
 
   useEffect(() => {
-    window.addEventListener('mouseup', handleUp);
-    window?.addEventListener('keydown', handleKeyboard)
+    window.addEventListener("mouseup", handleUp);
 
     return () => {
-      window.removeEventListener('mouseup', handleUp);
-      window?.removeEventListener('keydown', handleKeyboard)
-    }
-  })
+      window.removeEventListener("mouseup", handleUp);
+    };
+  });
 
   return (
-    <div style={{ width: '100%', ...psRl, ...borderBox, marginTop: 17, marginBottom: 4 }} id="gradient-bar">
+    <div className="w-full relative box-border" id="gradient-bar">
       <div
+        ref={barRef}
+        className="w-full h-4 rounded-full"
         style={{
-          width: squareSize,
-          height: 14,
-          backgroundImage: force90degLinear(value),
-          borderRadius: 10,
+          backgroundImage: force90degLinear(value)
         }}
-        onMouseDown={(e) => handleDown(e)}
-        onMouseMove={(e) => handleMove(e)}
+        onMouseDown={handleDown}
+        onMouseMove={handleMove}
       />
       {colors?.map((c, i) => (
         <Handle
           i={i}
           left={c.left}
+          width={barWidth}
           key={`${i}-${c}`}
           setInFocus={setInFocus}
           setDragging={setDragging}
         />
       ))}
     </div>
-  )
+  );
+};
+
+export default GradientBar;
+
+type HandleProps = {
+  left: number;
+  width: number;
+  i: number;
+  setDragging: (b: boolean) => void;
+  setInFocus: (s: string | null) => void;
 }
 
-export default GradientBar
+export const Handle = ({ left, i, setDragging, setInFocus, width }: HandleProps) => {
+  const { setSelectedColor, selectedColor } = usePicker();
+  const isSelected = selectedColor === i;
+  const leftMultiplyer = (width - 18) / 100;
 
-export const Handle = ({ left, i, setDragging, setInFocus }) => {
-  const { setSelectedColor, selectedColor, squareSize } = usePicker()
-  const isSelected = selectedColor === i
-  const leftMultiplyer = (squareSize - 18) / 100
-
-  const handleDown = (e) => {
-    e.stopPropagation()
-    setSelectedColor(i)
-    setDragging(true)
-  }
+  const handleDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedColor(i);
+    setDragging(true);
+  };
 
   const handleFocus = () => {
-    setInFocus('gpoint')
-    setSelectedColor(i)
-  }
+    setInFocus("gpoint");
+    setSelectedColor(i);
+  };
 
   const handleBlur = () => {
-    setInFocus(null)
-  }
+    setInFocus(null);
+  };
 
   return (
     <div
@@ -136,35 +128,31 @@ export const Handle = ({ left, i, setDragging, setInFocus }) => {
       onFocus={handleFocus}
       id={`gradient-handle-${i}`}
       onMouseDown={(e) => handleDown(e)}
-      style={{ left: left * leftMultiplyer, ...gradientHandleWrap }}
+      style={{ left: left * leftMultiplyer }}
+      className="absolute top-0.5 outline-none z-50"
     >
       <div
-        style={{
-          ...handleStyle(isSelected),
-          ...gradientHandle,
-          ...df,
-          ...jc,
-          ...ac,
-        }}
+        className="handle flex justify-center items-center"
+        style={handleStyle(isSelected)}
       >
         {isSelected && (
           <div
             style={{
               width: 5,
               height: 5,
-              borderRadius: '50%',
-              background: 'white',
+              borderRadius: "50%",
+              background: "white"
             }}
           />
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-const handleStyle = (isSelected) => {
+const handleStyle = (isSelected: boolean) => {
   return {
-    boxShadow: isSelected ? '0px 0px 5px 1px rgba(86, 140, 245,.95)' : '',
-    border: isSelected ? '2px solid white' : '2px solid rgba(255,255,255,.75)',
-  }
-}
+    boxShadow: isSelected ? "0px 0px 5px 1px rgba(86, 140, 245,.95)" : "",
+    border: isSelected ? "2px solid white" : "2px solid rgba(255,255,255,.75)"
+  };
+};

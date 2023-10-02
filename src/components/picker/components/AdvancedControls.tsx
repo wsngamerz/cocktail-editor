@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePicker } from "../context";
 import { getHandleValue } from "../utils/utils";
 import { usePaintBright, usePaintLight, usePaintSat } from "../hooks/usePaintHue";
-
-const tinycolor = require("tinycolor2");
+import tinycolor  from "tinycolor2";
 
 type AdvancedControlsProps = {
   openAdvanced: boolean
@@ -43,7 +42,7 @@ const AdvancedControls = ({ openAdvanced }: AdvancedControlsProps) => {
         transition: "all 120ms linear"
       }}
     >
-      <div style={{ paddingTop: 11, display: openAdvanced ? "" : "none" }}>
+      <div style={{display: openAdvanced ? "" : "none" }}>
         <AdvBar
           value={s}
           reffy={satRef}
@@ -85,7 +84,6 @@ const AdvBar = ({ value, callback, reffy, openAdvanced, label }: AdvBarProps) =>
   const [dragging, setDragging] = useState(false);
   const [handleTop, setHandleTop] = useState(2);
   const [barWidth, setBarWidth] = useState(0);
-  // const sliderId = `${label?.toLowerCase()}Handle`
 
   useEffect(() => {
     if (!reffy?.current) return;

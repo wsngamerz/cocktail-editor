@@ -1,7 +1,6 @@
 import { high, low } from "./formatters";
 import { isUpperCase } from "./utils";
-
-var tinycolor = require("tinycolor2");
+import tinycolor from "tinycolor2";
 
 export const gradientParser = (input = "") => {
   const tokens = {
@@ -33,10 +32,8 @@ export const gradientParser = (input = "") => {
     number: /^(([0-9]*\.[0-9]+)|([0-9]+\.?))/
   };
 
-  function error(msg) {
-    const err = new Error(input + ": " + msg);
-    err.source = input;
-    throw err;
+  function error(msg: string) {
+    throw new Error(input + ": " + msg);
   }
 
   function getAST() {
@@ -47,7 +44,7 @@ export const gradientParser = (input = "") => {
     }
 
     const ast0 = ast[0];
-    const checkSelected = ast0?.colorStops?.filter((c) =>
+    const checkSelected = ast0?.colorStops?.filter((c: any) =>
       isUpperCase(c.value)
     ).length;
 
@@ -55,10 +52,10 @@ export const gradientParser = (input = "") => {
       if (checkSelected > 0) {
         return ast0;
       } else {
-        let val = (c, i) => (i === 0 ? high(c) : low(c));
+        let val = (c: any, i: number) => (i === 0 ? high(c) : low(c));
         return {
           ...ast0,
-          colorStops: ast0.colorStops.map((c, i) => ({
+          colorStops: ast0.colorStops.map((c: any, i: number) => ({
             ...c,
             value: val(c, i)
           }))
@@ -98,9 +95,9 @@ export const gradientParser = (input = "") => {
     );
   }
 
-  function matchGradient(gradientType, pattern, orientationMatcher) {
-    return matchCall(pattern, function(captures) {
-      var orientation = orientationMatcher();
+  function matchGradient(gradientType: string, pattern: RegExp, orientationMatcher: Function) {
+    return matchCall(pattern, function() {
+      const orientation = orientationMatcher();
       if (orientation) {
         if (!scan(tokens.comma)) {
           error("Missing comma before color stops");
@@ -115,15 +112,15 @@ export const gradientParser = (input = "") => {
     });
   }
 
-  function matchCall(pattern, callback) {
-    var captures = scan(pattern);
+  function matchCall(pattern: RegExp, callback: Function) {
+    const captures = scan(pattern);
 
     if (captures) {
       if (!scan(tokens.startCall)) {
         error("Missing (");
       }
 
-      var result = callback(captures);
+      const result = callback(captures);
 
       if (!scan(tokens.endCall)) {
         error("Missing )");
@@ -169,20 +166,20 @@ export const gradientParser = (input = "") => {
   }
 
   function matchRadialOrientation() {
-    var radialType = matchCircle() || matchEllipse();
+    let radialType: any = matchCircle() || matchEllipse();
 
     if (radialType) {
       radialType.at = matchAtPosition();
     } else {
-      var extent = matchExtentKeyword();
+      const extent = matchExtentKeyword();
       if (extent) {
         radialType = extent;
-        var positionAt = matchAtPosition();
+        const positionAt = matchAtPosition();
         if (positionAt) {
           radialType.at = positionAt;
         }
       } else {
-        var defaultPosition = matchPositioning();
+        const defaultPosition = matchPositioning();
         if (defaultPosition) {
           radialType = {
             type: "default-radial",
@@ -196,7 +193,7 @@ export const gradientParser = (input = "") => {
   }
 
   function matchCircle() {
-    var circle = match("shape", /^(circle)/i, 0);
+    const circle: any = match("shape", /^(circle)/i, 0);
 
     if (circle) {
       circle.style = matchLength() || matchExtentKeyword();
@@ -206,7 +203,7 @@ export const gradientParser = (input = "") => {
   }
 
   function matchEllipse() {
-    var ellipse = match("shape", /^(ellipse)/i, 0);
+    const ellipse: any = match("shape", /^(ellipse)/i, 0);
 
     if (ellipse) {
       ellipse.style = matchDistance() || matchExtentKeyword();
@@ -221,7 +218,7 @@ export const gradientParser = (input = "") => {
 
   function matchAtPosition() {
     if (match("position", /^at/, 0)) {
-      var positioning = matchPositioning();
+      const positioning = matchPositioning();
 
       if (!positioning) {
         error("Missing positioning value");
@@ -232,7 +229,7 @@ export const gradientParser = (input = "") => {
   }
 
   function matchPositioning() {
-    var location = matchCoordinates();
+    const location = matchCoordinates();
 
     if (location.x || location.y) {
       return {
@@ -249,9 +246,9 @@ export const gradientParser = (input = "") => {
     };
   }
 
-  function matchListing(matcher) {
-    var captures = matcher(),
-      result = [];
+  function matchListing(matcher: Function) {
+    let captures = matcher();
+    let result = [];
 
     if (captures) {
       result.push(captures);
@@ -275,7 +272,7 @@ export const gradientParser = (input = "") => {
       error("Expected color definition");
     }
 
-    color.left = parseInt(matchDistance()?.value);
+    color.left = parseInt(matchDistance()?.value || "0");
     return color;
   }
 
@@ -310,7 +307,7 @@ export const gradientParser = (input = "") => {
     }
   }
 
-  const convertHsl = (val) => {
+  const convertHsl = (val: string) => {
     let capIt = isUpperCase(val?.[0]);
     let hsl = matchListing(matchNumber);
     let { r, g, b, a } = tinycolor({
@@ -328,7 +325,7 @@ export const gradientParser = (input = "") => {
     return matchCall(tokens.hslColor, convertHsl);
   }
 
-  const convertHsv = (val) => {
+  const convertHsv = (val: string) => {
     let capIt = isUpperCase(val?.[0]);
     let hsv = matchListing(matchNumber);
     let { r, g, b, a } = tinycolor({
@@ -346,7 +343,7 @@ export const gradientParser = (input = "") => {
     return matchCall(tokens.hsvColor, convertHsv);
   }
 
-  const convertRgb = (val) => {
+  const convertRgb = (val: string) => {
     let capIt = isUpperCase(val?.[0]);
     const captures = scan(tokens.spacedRgbColor);
     const [, r, g, b, a = 1] = captures || [null, ...matchListing(matchNumber)];
@@ -359,7 +356,7 @@ export const gradientParser = (input = "") => {
     return matchCall(tokens.rgbColor, convertRgb);
   }
 
-  const checkCaps = (val) => {
+  const checkCaps = (val: string) => {
     let capIt = isUpperCase(val?.[0]);
     return {
       value: `${capIt ? "RGBA" : "rgba"}(${matchListing(matchNumber)})`
@@ -371,7 +368,8 @@ export const gradientParser = (input = "") => {
   }
 
   function matchNumber() {
-    return scan(tokens.number)[1];
+    const res = scan(tokens.number);
+    return res ? res[1] : null;
   }
 
   function matchDistance() {
@@ -390,8 +388,8 @@ export const gradientParser = (input = "") => {
     return match("px", tokens.pixelValue, 1) || match("em", tokens.emValue, 1);
   }
 
-  function match(type, pattern, captureIndex) {
-    var captures = scan(pattern);
+  function match(type: string, pattern: RegExp, captureIndex: number) {
+    const captures = scan(pattern);
     if (captures) {
       return {
         type: type,
@@ -400,8 +398,8 @@ export const gradientParser = (input = "") => {
     }
   }
 
-  function scan(regexp) {
-    var captures, blankCaptures;
+  function scan(regexp: RegExp) {
+    let captures, blankCaptures;
 
     blankCaptures = /^[\n\r\t\s]+/.exec(input);
     if (blankCaptures) {
@@ -416,8 +414,8 @@ export const gradientParser = (input = "") => {
     return captures;
   }
 
-  function consume(size) {
-    input = input.substr(size);
+  function consume(size: number) {
+    input = input.substring(size);
   }
 
   return getAST();

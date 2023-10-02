@@ -14,3 +14,9 @@
     border-radius: 6px;
     box-shadow: 1px 1px 14px 1px rgba(0, 0, 0, .25);
 }
+
+.input-contained {
+    @apply border-none outline-none;
+    @apply text-sm;
+    @apply bg-transparent h-full;
+}
