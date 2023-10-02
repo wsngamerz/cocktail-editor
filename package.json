@@ -35,12 +35,14 @@
     "swr": "^2.2.4",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "tinycolor2": "^1.6.0",
     "zod": "^3.22.2"
   },
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/tinycolor2": "^1.4.4",
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",

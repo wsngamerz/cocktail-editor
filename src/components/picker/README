@@ -1,0 +1,5 @@
+This is a modified version of `react-best-gradient-color-picker`
+located https://github.com/hxf31891/react-gradient-color-picker
+
+This was done to convert to typescript, add some additional features, remove redundant code (in my use case),
+and most importantly, being able to use existing input components and apply dark mode styling.

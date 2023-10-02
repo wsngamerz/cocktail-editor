@@ -3,7 +3,7 @@ import type { Cocktail } from "@/types/cocktail";
 
 import EditorTab from "@/components/editors/cocktail/tabs/EditorTab";
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import ColourPicker from "@/components/ColourPicker";
+import Index from "@/components/picker";
 
 export default function LiquidTab({ form }: { form: UseFormReturn<Cocktail, any, undefined> }) {
   return (
@@ -15,7 +15,7 @@ export default function LiquidTab({ form }: { form: UseFormReturn<Cocktail, any,
           <FormItem>
             <FormLabel>Colour</FormLabel>
             <FormControl>
-              <ColourPicker value={field.value} onChange={field.onChange} />
+              <Index value={field.value} onChange={field.onChange} />
             </FormControl>
             <FormDescription>
               Liquid colour in the glass

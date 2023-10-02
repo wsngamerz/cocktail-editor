@@ -1,0 +1,16 @@
+.handle {
+    @apply absolute z-50 box-border h-4 w-4 rounded-full border-2 border-white;
+
+    box-shadow: 0 0 3px rgba(0, 0, 0, .5);
+}
+
+.input-dropdown {
+    position: absolute;
+    right: -2px;
+    top: 34px;
+    padding: 5px;
+    background: #e9e9f5;
+    z-index: 100000000;
+    border-radius: 6px;
+    box-shadow: 1px 1px 14px 1px rgba(0, 0, 0, .25);
+}
