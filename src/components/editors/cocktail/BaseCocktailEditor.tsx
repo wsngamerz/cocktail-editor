@@ -93,7 +93,7 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
 
         <div className="editor-card overflow-hidden">
           <div className="overflow-scroll">
-            <pre className="text-xs">{JSON.stringify(watchForm, null, 2)}</pre>
+            <pre className="text-xs">{JSON.stringify(watchForm, null, 4)}</pre>
           </div>
         </div>
       </div>

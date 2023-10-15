@@ -18,6 +18,8 @@ type FormSelectProps<T> = {
 }
 
 export function FormSelect<T>(props: FormSelectProps<T>) {
+  const initialValue = props.enum[props.control._defaultValues[props.name]];
+
   return (
     <FormField
       control={props.control}
@@ -25,7 +27,7 @@ export function FormSelect<T>(props: FormSelectProps<T>) {
       render={({ field }) => (
         <FormItem>
           <FormLabel>{props.label}</FormLabel>
-          <Select onValueChange={(value) => field.onChange(props.enum[value])}>
+          <Select defaultValue={initialValue} onValueChange={(value) => field.onChange(props.enum[value])}>
             <FormControl>
               <SelectTrigger>
                 <SelectValue placeholder={props.placeholder || ""} />
