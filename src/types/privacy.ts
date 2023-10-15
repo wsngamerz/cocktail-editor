@@ -4,7 +4,7 @@ export enum Privacy {
   UNLISTED,
 }
 
-export const privacyToString = (privacy: Privacy): string => {
+export const privacyToString = (privacy: Privacy | string): string => {
   switch (privacy) {
     case Privacy.PUBLIC:
       return "Public";
@@ -13,4 +13,6 @@ export const privacyToString = (privacy: Privacy): string => {
     case Privacy.UNLISTED:
       return "Unlisted";
   }
+
+  return "Unknown";
 }

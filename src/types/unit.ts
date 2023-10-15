@@ -14,7 +14,7 @@ export enum Unit {
   NONE,
 }
 
-export const unitToString = (unit: Unit): string => {
+export const unitToString = (unit: Unit | string): string => {
   switch (unit) {
     case Unit.ML:
       return "ml";
@@ -43,4 +43,6 @@ export const unitToString = (unit: Unit): string => {
     case Unit.NONE:
       return "none";
   }
+
+  return "";
 };

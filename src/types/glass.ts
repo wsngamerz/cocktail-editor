@@ -10,7 +10,7 @@ export enum Glass {
   COUPE
 }
 
-export const glassToString = (glass: Glass): string => {
+export const glassToString = (glass: Glass | string): string => {
   switch (glass) {
     case Glass.MARTINI:
       return "Martini";
@@ -31,4 +31,6 @@ export const glassToString = (glass: Glass): string => {
     case Glass.COUPE:
       return "Coupe";
   }
+
+  return "Unknown";
 }

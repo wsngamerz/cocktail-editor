@@ -7,17 +7,17 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import type { Cocktail, CocktailIngredient } from "@/types/cocktail";
 import { Unit, unitToString } from "@/types/unit";
 import useIngredients from "@/hooks/useIngredients";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import EditorTab from "@/components/editors/cocktail/tabs/EditorTab";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import IngredientItem from "@/components/editors/cocktail/tabs/ingredients/IngredientItem";
 import IngredientSelector from "@/components/editors/cocktail/tabs/ingredients/IngredientSelector";
 import EmptyList from "@/components/editors/cocktail/tabs/EmptyList";
+import { FormInput } from "@/components/form/FormInput";
+import { FormSelect } from "@/components/form/FormSelect";
 
 export default function Index({ form }: { form: UseFormReturn<Cocktail, any, undefined> }) {
-  const { ingredients, isError, isLoading: isIngredientsLoading } = useIngredients();
+  const { ingredients, isLoading: isIngredientsLoading } = useIngredients();
   const watchIngredients = form.watch("ingredients");
 
   const ingredientForm = useForm<CocktailIngredient>({
@@ -148,52 +148,15 @@ export default function Index({ form }: { form: UseFormReturn<Cocktail, any, und
 
                   <div className="grid grid-cols-2 gap-4">
                     {/*Cocktail Ingredient Amount*/}
-                    <FormField
-                      control={ingredientForm.control}
-                      name="amount"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Amount</FormLabel>
-                          <FormControl>
-                            {/* Casting to integer within onChange event*/}
-                            <Input {...field} type="number" placeholder="0"
-                                   onChange={(e) => field.onChange(+e.target.value)} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <FormInput control={ingredientForm.control} name="amount" label="Amount" placeholder="0"
+                               type="number"
+                               onChange={(field, e) => field.onChange(+e.target.value)} />
+
 
                     {/* Cocktail Ingredient Unit */}
-                    <FormField
-                      control={ingredientForm.control}
-                      name="unit"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Unit</FormLabel>
-                          <Select onValueChange={(value) => field.onChange(Unit[value as keyof typeof Unit])}
-                                  defaultValue={Unit[field.value]}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a unit" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {Object.values(Unit)
-                                .filter(unit => typeof unit === "string")
-                                .map((unit) => {
-                                  return (
-                                    <SelectItem key={unit} value={unit as string}>
-                                      {unitToString(Unit[unit as keyof typeof Unit])}
-                                    </SelectItem>
-                                  );
-                                })}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <FormSelect control={ingredientForm.control} name="unit" label="Unit"
+                                placeholder="Select unit"
+                                enum={Unit} enumToString={unitToString} />
                   </div>
                 </div>
 

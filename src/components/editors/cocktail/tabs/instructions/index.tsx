@@ -1,17 +1,17 @@
 import React from "react";
 import type { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import type { Cocktail, CocktailInstruction } from "@/types/cocktail";
 
 import EditorTab from "@/components/editors/cocktail/tabs/EditorTab";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { RefreshCcwIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { Textarea } from "@/components/ui/textarea";
 import InstructionItem from "@/components/editors/cocktail/tabs/instructions/InstructionItem";
 import EmptyList from "@/components/editors/cocktail/tabs/EmptyList";
+import { FormTextArea } from "@/components/form/FormTextArea";
 
 export default function InstructionsTab({ form }: { form: UseFormReturn<Cocktail, any, undefined> }) {
   const watchInstructions = form.watch("instructions");
@@ -109,7 +109,7 @@ export default function InstructionsTab({ form }: { form: UseFormReturn<Cocktail
 
               {watchInstructions.length === 0 && (
                 <EmptyList>
-                    Add instructions to your cocktail below.
+                  Add instructions to your cocktail below.
                 </EmptyList>
               )}
             </div>
@@ -122,19 +122,7 @@ export default function InstructionsTab({ form }: { form: UseFormReturn<Cocktail
           <Form {...instructionForm}>
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4">
-                <FormField
-                  control={instructionForm.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Instruction</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormTextArea control={instructionForm.control} name="content" label="Instruction" />
               </div>
 
               <div className="flex gap-1">

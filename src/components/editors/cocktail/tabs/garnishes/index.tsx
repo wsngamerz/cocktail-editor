@@ -6,14 +6,14 @@ import type { Cocktail, CocktailGarnish } from "@/types/cocktail";
 import EditorTab from "@/components/editors/cocktail/tabs/EditorTab";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { RefreshCcwIcon } from "lucide-react";
 import EmptyList from "@/components/editors/cocktail/tabs/EmptyList";
 import { Garnish, garnishToString } from "@/types/garnish";
 import GarnishItem from "@/components/editors/cocktail/tabs/garnishes/GarnishItem";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import { FormSelect } from "@/components/form/FormSelect";
+import { FormInput } from "@/components/form/FormInput";
 
 export default function GarnishesTab({ form }: {
   form: UseFormReturn<Cocktail, any, undefined>
@@ -102,71 +102,19 @@ export default function GarnishesTab({ form }: {
             <div className="space-y-4">
 
               {/* Garnish type */}
-              <FormField
-                control={garnishForm.control}
-                name="garnish"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Garnish</FormLabel>
-                    <Select onValueChange={(value) => field.onChange(Garnish[value as keyof typeof Garnish])}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a garnish" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Object.values(Garnish)
-                          .filter(garnish => typeof garnish === "string")
-                          .map((garnish) => {
-                            return (
-                              <SelectItem key={garnish} value={garnish as string}>
-                                {garnishToString(Garnish[garnish as keyof typeof Garnish])}
-                              </SelectItem>
-                            );
-                          })}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormSelect control={garnishForm.control} name="garnish" label="Garnish"
+                          placeholder="Select a garnish"
+                          enum={Garnish} enumToString={garnishToString} />
 
               <div className="grid grid-cols-2 gap-4">
                 {/* Garnish x */}
-                <FormField
-                  control={garnishForm.control}
-                  name="x"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>X</FormLabel>
-                      <FormControl>
-                        {/* Casting to integer within onChange event*/}
-                        <Input {...field} type="number" placeholder="0"
-                               onChange={(e) => field.onChange(+e.target.value)} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormInput control={garnishForm.control} name="x" label="X" placeholder="0" type="number"
+                           onChange={(field, e) => field.onChange(+e.target.value)} />
 
 
                 {/* Garnish y */}
-                <FormField
-                  control={garnishForm.control}
-                  name="y"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Y</FormLabel>
-                      <FormControl>
-                        {/* Casting to integer within onChange event*/}
-                        <Input {...field} type="number" placeholder="0"
-                               onChange={(e) => field.onChange(+e.target.value)} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
+                <FormInput control={garnishForm.control} name="y" label="Y" placeholder="0" type="number"
+                           onChange={(field, e) => field.onChange(+e.target.value)} />
               </div>
 
               <div className="flex gap-1">
