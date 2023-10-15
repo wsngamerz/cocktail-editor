@@ -91,8 +91,8 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
           </Tabs.Root>
         </div>
 
-        <div className="editor-card">
-          <div>
+        <div className="editor-card overflow-hidden">
+          <div className="overflow-scroll">
             <pre className="text-xs">{JSON.stringify(watchForm, null, 2)}</pre>
           </div>
         </div>

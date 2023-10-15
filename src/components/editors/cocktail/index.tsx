@@ -1,3 +1,3 @@
 "use client";
 
-export { CreateCocktailEditor } from "./CreateCocktailEditor";
+export { default as BaseCocktailEditor } from "./BaseCocktailEditor";
