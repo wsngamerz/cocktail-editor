@@ -1,8 +1,8 @@
 import { Ingredient } from "@/types/ingredient";
 import useSWR from "swr";
-import fetcher from "@/lib/utils";
+import fetcher from "@/lib/utils"
 
-type IngredientResponse = {
+export type IngredientResponse = {
   data: Ingredient[];
   status: string;
 }

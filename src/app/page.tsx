@@ -11,6 +11,9 @@ export default function Home() {
         <Link href="/edit">
           <Button>Edit</Button>
         </Link>
+        <Link href="/cocktail">
+          <Button>Cocktail</Button>
+        </Link>
       </div>
     </main>
   );

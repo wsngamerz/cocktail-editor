@@ -1,7 +1,7 @@
-import type { Cocktail } from "@/types/cocktail";
+import type { Cocktail, DisplayCocktail } from "@/types/cocktail";
 
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Privacy } from "@/types/privacy";
 import { Glass } from "@/types/glass";
 
@@ -14,11 +14,13 @@ import { DetailsTab } from "@/components/editors/cocktail/tabs/DetailsTab";
 import "./editor.css";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { slugify } from "@/lib/utils";
+import { cocktailAsDisplayCocktail, slugify } from "@/lib/utils";
 import LiquidTab from "@/components/editors/cocktail/tabs/LiquidTab";
 import GarnishTab from "@/components/editors/cocktail/tabs/garnishes";
 import IngredientsTab from "@/components/editors/cocktail/tabs/ingredients";
 import InstructionsTab from "@/components/editors/cocktail/tabs/instructions";
+import CocktailView from "@/components/cocktail/View";
+import { Ingredient } from "@/types/ingredient";
 
 const emptyCocktail: Cocktail = {
   id: 0,
@@ -49,10 +51,11 @@ type CocktailEditorProps = {
   title: string;
   onSave: (data: Cocktail) => void;
   onCancel: () => void;
+  ingredients: Ingredient[];
 
   initialData?: Cocktail;
 }
-export default function BaseCocktailEditor({ initialData, title, onSave, onCancel }: CocktailEditorProps) {
+export default function BaseCocktailEditor({ initialData, title, onSave, onCancel, ingredients }: CocktailEditorProps) {
   const form = useForm<Cocktail>({
     defaultValues: initialData ?? emptyCocktail
   });
@@ -60,7 +63,10 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
   const watchForm = form.watch();
   const watchName = form.watch("name");
 
+  const [displayCocktail, setDisplayCocktail] = useState<DisplayCocktail>(cocktailAsDisplayCocktail(watchForm, ingredients));
+
   useEffect(() => form.setValue("slug", slugify(watchName)), [form, watchName]);
+  useEffect(() => setDisplayCocktail(cocktailAsDisplayCocktail(watchForm, ingredients)), [ingredients, watchForm]);
 
   return (
     <div className="w-full h-full flex flex-col gap-4">
@@ -80,11 +86,21 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
 
             <Form {...form}>
               <form className="grow w-full" onSubmit={form.handleSubmit(onSave)}>
-                <Tabs.Content className="w-full h-full" value={EditorTab.DETAILS}><DetailsTab form={form} /></Tabs.Content>
-                <Tabs.Content className="w-full h-full" value={EditorTab.LIQUID}><LiquidTab form={form} /></Tabs.Content>
-                <Tabs.Content className="w-full h-full" value={EditorTab.GARNISHES}><GarnishTab form={form} /></Tabs.Content>
-                <Tabs.Content className="w-full h-full" value={EditorTab.INGREDIENTS}><IngredientsTab form={form} /></Tabs.Content>
-                <Tabs.Content className="w-full h-full" value={EditorTab.INSTRUCTIONS}><InstructionsTab form={form} /></Tabs.Content>
+                <Tabs.Content className="w-full h-full" value={EditorTab.DETAILS}>
+                  <DetailsTab form={form} />
+                </Tabs.Content>
+                <Tabs.Content className="w-full h-full" value={EditorTab.LIQUID}>
+                  <LiquidTab form={form} />
+                </Tabs.Content>
+                <Tabs.Content className="w-full h-full" value={EditorTab.GARNISHES}>
+                  <GarnishTab form={form} />
+                </Tabs.Content>
+                <Tabs.Content className="w-full h-full" value={EditorTab.INGREDIENTS}>
+                  <IngredientsTab form={form} ingredients={ingredients} />
+                </Tabs.Content>
+                <Tabs.Content className="w-full h-full" value={EditorTab.INSTRUCTIONS}>
+                  <InstructionsTab form={form} />
+                </Tabs.Content>
               </form>
             </Form>
 
@@ -92,9 +108,7 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
         </div>
 
         <div className="editor-card overflow-hidden">
-          <div className="overflow-scroll">
-            <pre className="text-xs">{JSON.stringify(watchForm, null, 4)}</pre>
-          </div>
+          <CocktailView cocktail={displayCocktail} />
         </div>
       </div>
 
@@ -111,7 +125,8 @@ export default function BaseCocktailEditor({ initialData, title, onSave, onCance
 function EditorTabTrigger({ value, name, icon }: { value: EditorTab, name: string, icon: ReactNode }) {
   return (
     <Tabs.Trigger
-      className="aspect-square p-1 bg-gray-50 rounded text-gray-600 data-[state=active]:text-gray-900 data-[state=active]:bg-gray-200 transition-colors duration-200 dark:bg-gray-900 dark:text-gray-500 dark:data-[state=active]:text-gray-100 dark:data-[state=active]:bg-gray-800"      value={value}>
+      className="aspect-square p-1 bg-gray-50 rounded text-gray-600 data-[state=active]:text-gray-900 data-[state=active]:bg-gray-200 transition-colors duration-200 dark:bg-gray-900 dark:text-gray-500 dark:data-[state=active]:text-gray-100 dark:data-[state=active]:bg-gray-800"
+      value={value}>
       <div className="text-center flex flex-col items-center gap-1">
         {icon}
         <span className="text-xs">

@@ -43,3 +43,10 @@ export type CocktailInstruction = {
   order: number;
   content: string;
 }
+
+export type DisplayCocktail = Omit<Cocktail, "ingredients"> & {
+  ingredients: (CocktailIngredient & {
+    name: string;
+    abv: number;
+  })[];
+};
